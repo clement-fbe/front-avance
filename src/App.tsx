@@ -45,11 +45,11 @@ import './App.css';
 // }
 
 // export default App;
-
 import { useState } from 'react';
-import PokedexList from '../components/PokedexList';
 import PokedexDetails from '../components/PokedexDetails';
 import type { Pokemon } from '../types/pokemon.type';
+import PokedexLayout from '../components/PokedexLayout';
+import PokedexTop from '../components/PokedexTop';
 
 function App() {
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
@@ -60,9 +60,7 @@ function App() {
     setSelectedIndex(index);
   };
 
-  const handleBack = () => {
-    setSelectedIndex(null);
-  };
+  const handleBack = () => setSelectedIndex(null);
 
   const handleNext = () => {
     if (selectedIndex !== null && selectedIndex < pokemonList.length - 1) {
@@ -77,18 +75,30 @@ function App() {
   };
 
   return (
-    <div>
-      {selectedIndex === null ? (
-        <PokedexList onSelect={handleSelect} onListLoaded={setPokemonList} />
-      ) : (
-        <PokedexDetails
-          pokemon={pokemonList[selectedIndex]}
-          onBack={handleBack}
-          onNext={handleNext}
-          onPrev={handlePrev}
+    <PokedexLayout
+      top={
+        <PokedexTop
+          pokemonList={pokemonList}
+          selectedIndex={selectedIndex}
+          onSelect={handleSelect}
+          onListLoaded={setPokemonList} // ← important pour charger la liste
         />
-      )}
-    </div>
+      }
+      bottom={
+        selectedIndex === null ? (
+          <div style={{ textAlign: 'center', marginTop: '20px' }}>
+            Sélectionne un Pokémon dans la liste
+          </div>
+        ) : (
+          <PokedexDetails
+            pokemon={pokemonList[selectedIndex]}
+            onBack={handleBack}
+            onNext={handleNext}
+            onPrev={handlePrev}
+          />
+        )
+      }
+    />
   );
 }
 

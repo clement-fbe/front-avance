@@ -14,6 +14,14 @@ export interface RawPokemon {
   weight: number;
 }
 
+export interface TyradexPokemon {
+  pokedex_id: number;
+  name: { fr: string };
+  types: { name: string }[];
+  height: number;
+  weight: number;
+}
+
 // Structure propre utilisée dans ton application
 export interface Pokemon {
   nationalId: number;
@@ -22,4 +30,5 @@ export interface Pokemon {
   types: string[];
   height: number;
   weight: number;
+  caught: boolean;
 }

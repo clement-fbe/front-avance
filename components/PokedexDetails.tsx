@@ -1,3 +1,4 @@
+import { Typography, Stack, Button, Paper } from '@mui/material';
 import type { Pokemon } from '../types/pokemon.type';
 
 interface Props {
@@ -14,22 +15,52 @@ export default function PokedexDetails({
   onPrev,
 }: Props) {
   return (
-    <div>
-      <h2>
+    <Paper
+      elevation={3}
+      sx={{
+        p: 3,
+        borderRadius: 2,
+        bgcolor: '#fafafa',
+      }}
+    >
+      {/* Titre */}
+      <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
         #{pokemon.sinnohId} {pokemon.name}
-      </h2>
+      </Typography>
 
-      <p>N° National : {pokemon.nationalId}</p>
-      <p>Types : {pokemon.types.join(', ')}</p>
-      <p>Taille : {pokemon.height}</p>
-      <p>Poids : {pokemon.weight}</p>
-      <p>Description : "description du pokémon"</p>
+      {/* Infos */}
+      <Typography variant="subtitle1" color="text.secondary">
+        N° National : {pokemon.nationalId}
+      </Typography>
 
-      <div style={{ marginTop: '20px' }}>
-        <button onClick={onBack}>Retour</button>
-        <button onClick={onPrev}>Précédent</button>
-        <button onClick={onNext}>Suivant</button>
-      </div>
-    </div>
+      <Typography sx={{ mt: 1 }}>
+        <strong>Types :</strong> {pokemon.types.join(', ')}
+      </Typography>
+
+      <Typography>
+        <strong>Taille :</strong> {pokemon.height}
+      </Typography>
+
+      <Typography>
+        <strong>Poids :</strong> {pokemon.weight}
+      </Typography>
+
+      <Typography sx={{ mt: 2 }}>
+        <strong>Description :</strong> description du pokémon
+      </Typography>
+
+      {/* Boutons */}
+      <Stack direction="row" spacing={2} sx={{ mt: 4 }}>
+        <Button variant="contained" color="primary" onClick={onBack}>
+          Retour
+        </Button>
+        <Button variant="outlined" onClick={onPrev}>
+          Précédent
+        </Button>
+        <Button variant="outlined" onClick={onNext}>
+          Suivant
+        </Button>
+      </Stack>
+    </Paper>
   );
 }
