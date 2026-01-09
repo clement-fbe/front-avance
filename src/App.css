@@ -39,3 +39,8 @@
 .read-the-docs {
   color: #888;
 }
+
+.MuiBox-root,
+.css-dx2e70 {
+  padding: 0 !important;
+}
