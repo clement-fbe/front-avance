@@ -13,21 +13,9 @@ export default function PokedexList({ onSelect, onListLoaded }: Props) {
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
 
   useEffect(() => {
-    getGen4Pokemon().then((data: Record<string, RawPokemon>) => {
-      const converted: Pokemon[] = Object.values(data)
-        .sort((a, b) => a.pokedex_id - b.pokedex_id) // tri national
-        .map((p, index) => ({
-          nationalId: p.pokedex_id,
-          sinnohId: index + 1,
-          name: p.name.fr,
-          types: p.types.map((t) => t.name),
-          height: p.height,
-          weight: p.weight,
-          caught: false,
-        }));
-
-      setPokemonList(converted);
-      onListLoaded(converted);
+    getGen4Pokemon().then((data: Pokemon[]) => {
+      setPokemonList(data);
+      onListLoaded(data);
     });
   }, []);
 

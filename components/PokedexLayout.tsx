@@ -35,10 +35,10 @@ export default function PokedexLayout({ top, bottom }: PokedexLayoutProps) {
         <Box
           sx={{
             flex: '1 1 50%',
-            maxHeight: '50vh',
+            height: '50%',
+            minHeight: 0,
             overflow: 'hidden',
             borderBottom: '3px solid black',
-            p: 2,
             bgcolor: '#f3e9d2', // beige clair
           }}
         >
@@ -49,7 +49,8 @@ export default function PokedexLayout({ top, bottom }: PokedexLayoutProps) {
         <Box
           sx={{
             flex: '1 1 50%',
-            maxHeight: '50vh',
+            height: '50%',
+            minHeight: 0,
             overflow: 'hidden',
             p: 2,
             bgcolor: '#e8dcc0', // beige un peu plus foncé
