@@ -4,10 +4,12 @@ import type { Pokemon } from '../types/pokemon.type';
 import { getGen4Pokemon } from '../src/services/tyradex';
 import pokeball from '../src/assets/pokeball.png';
 import primerball from '../src/assets/primerball.png';
+import { useCaptureStatus } from '../src/hook/useCaptureStatus'; // ← Import du hook
 
 interface Props {
   pokemonList: Pokemon[];
   selectedIndex: number | null;
+  initialIndex: number;
   onSelect: (pokemon: Pokemon) => void;
   onListLoaded: (list: Pokemon[]) => void;
 }
@@ -15,16 +17,25 @@ interface Props {
 export default function PokedexTop({
   pokemonList,
   selectedIndex,
+  initialIndex,
   onSelect,
   onListLoaded,
 }: Props) {
+  const { isCaptured } = useCaptureStatus(); // ← Utiliser le hook
+
   // Index contrôlé par les flèches
-  const [cursorIndex, setCursorIndex] = useState(0);
+  const [cursorIndex, setCursorIndex] = useState(initialIndex);
 
   // Synchroniser le curseur avec l'index sélectionné (URL)
   useEffect(() => {
     if (selectedIndex !== null && selectedIndex >= 0) {
       setCursorIndex(selectedIndex);
+      return;
+    }
+    if (pokemonList.length > 0) {
+      setCursorIndex((prev) =>
+        Math.min(Math.max(prev, 0), pokemonList.length - 1),
+      );
     }
   }, [selectedIndex]);
 
@@ -65,30 +76,23 @@ export default function PokedexTop({
   // Pokémon affiché = sélection clavier uniquement
   const selectedPokemon = pokemonList[cursorIndex] ?? null;
 
-  // Chargement de la liste via le service (avec cache)
-  useEffect(() => {
-    getGen4Pokemon().then((converted) => {
-      onListLoaded(converted);
-    });
-  }, [onListLoaded]);
-
   return (
     <Box
       sx={{
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        mx: '-30px', // margin-left et margin-right: -30px
+        mx: '-30px',
         background: `
-      linear-gradient(
-        to bottom,
-        rgb(146 146 113) 0%,
-        rgb(146 146 113) 10%,
-        rgb(113 113 81) 50%,
-        rgb(146 146 113) 90%,
-        rgb(146 146 113) 100%
-      )
-    `,
+          linear-gradient(
+            to bottom,
+            rgb(146 146 113) 0%,
+            rgb(146 146 113) 10%,
+            rgb(113 113 81) 50%,
+            rgb(146 146 113) 90%,
+            rgb(146 146 113) 100%
+          )
+        `,
       }}
     >
       {/* Section header en deux parties */}
@@ -106,7 +110,7 @@ export default function PokedexTop({
             bgcolor: '#d3ba61',
             display: 'flex',
             alignItems: 'center',
-            pl: 3, // Plus de padding à gauche
+            pl: 3,
             pr: 2,
           }}
         >
@@ -124,7 +128,7 @@ export default function PokedexTop({
               justifyContent: 'center',
               gap: 1,
               border: '2px solid #616161',
-              ml: '50px', // margin-left: 50px
+              ml: '50px',
             }}
           >
             <img src={primerball} alt="" style={{ width: 20, height: 20 }} />
@@ -176,7 +180,7 @@ export default function PokedexTop({
           {/* Carré blanc */}
           <Box
             sx={{
-              width: 'min(28vw, 28vh, 200px)', // ← carré responsive max 200px
+              width: 'min(28vw, 28vh, 200px)',
               height: 'min(28vw, 28vh, 200px)',
               position: 'absolute',
               top: '50%',
@@ -185,12 +189,12 @@ export default function PokedexTop({
               borderRadius: '8px',
               backgroundImage: `
                 repeating-linear-gradient(
-                to bottom,
-              #ffffff 0px,
-              #ffffff 5px,
-                rgb(243 243 251) 5px,
-                rgb(243 243 251) 10px
-              )
+                  to bottom,
+                  #ffffff 0px,
+                  #ffffff 5px,
+                  rgb(243 243 251) 5px,
+                  rgb(243 243 251) 10px
+                )
               `,
               boxShadow: `
                 0 0 0 3px rgb(138 162 211),
@@ -228,7 +232,7 @@ export default function PokedexTop({
             minHeight: 0,
             px: 1,
             py: 2,
-            pointerEvents: 'none', // Désactive toutes les interactions souris
+            pointerEvents: 'none',
           }}
         >
           <List
@@ -245,15 +249,17 @@ export default function PokedexTop({
               const offset = Math.min(distance * 8, 32);
 
               const bgByDistance = [
-                '#fbfbc3', // distance 0
-                '#ebe3c3', // distance 1
-                '#d3cbba', // distance 2
-                '#bab2ba', // distance 3
-                '#a19aa3', // distance 4+
+                '#fbfbc3',
+                '#ebe3c3',
+                '#d3cbba',
+                '#bab2ba',
+                '#a19aa3',
               ];
 
               const backgroundColor =
                 bgByDistance[distance] ?? bgByDistance[bgByDistance.length - 1];
+
+              const captured = isCaptured(p.nationalId); // ← Vérifier si capturé
 
               return (
                 <Box
@@ -283,28 +289,32 @@ export default function PokedexTop({
                       flexShrink: 0,
                     }}
                   >
+                    {/* Cercle de fond */}
                     <Box
                       sx={{
                         width: '100%',
                         height: '100%',
                         borderRadius: '50%',
-                        backgroundColor: p.caught ? '#4caf50' : '#d0d0d0',
+                        backgroundColor: captured ? '#4caf50' : '#d0d0d0',
                         position: 'absolute',
                         top: 0,
                         left: 0,
                       }}
                     />
 
-                    <img
-                      src={pokeball}
-                      alt=""
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        position: 'relative',
-                        zIndex: 2,
-                      }}
-                    />
+                    {/* Image de la Pokéball - affichée seulement si capturé */}
+                    {captured && (
+                      <img
+                        src={pokeball}
+                        alt=""
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          position: 'relative',
+                          zIndex: 2,
+                        }}
+                      />
+                    )}
                   </Box>
                   <Typography
                     sx={{
@@ -383,7 +393,7 @@ export default function PokedexTop({
       {/* Nouvelle barre en haut */}
       <Box
         sx={{
-          height: '15%', // ← quelques pourcents de hauteur
+          height: '15%',
           display: 'flex',
           flexShrink: 0,
         }}

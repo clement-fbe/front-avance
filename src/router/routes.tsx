@@ -1,15 +1,7 @@
 import type { RouteObject } from 'react-router-dom';
 import RootLayout from './RootLayout';
 import PokedexDetailsPage from '../../components/PokedexDetailsPage';
-
-// Page d'accueil (écran bas vide)
-function HomePage() {
-  return (
-    <div style={{ textAlign: 'center', marginTop: '20px' }}>
-      Sélectionne un Pokémon dans la liste
-    </div>
-  );
-}
+import PokedexBottom from '../../components/PokedexBottom';
 
 export const routes: RouteObject[] = [
   {
@@ -18,7 +10,7 @@ export const routes: RouteObject[] = [
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: <PokedexBottom />,
       },
       {
         path: 'pokemon/:nationalId',

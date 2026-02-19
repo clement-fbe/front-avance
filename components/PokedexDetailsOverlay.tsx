@@ -1,11 +1,13 @@
 import { Box, Typography } from '@mui/material';
 import type { Pokemon } from '../types/pokemon.type';
+import pokeball from '../src/assets/pokeball.png';
 
 interface Props {
   pokemon: Pokemon;
+  isCaptured: boolean;
 }
 
-export default function PokedexDetailsOverlay({ pokemon }: Props) {
+export default function PokedexDetailsOverlay({ pokemon, isCaptured }: Props) {
   return (
     <Box
       sx={{
@@ -23,9 +25,44 @@ export default function PokedexDetailsOverlay({ pokemon }: Props) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          gap: 2, // ← Espacement entre les éléments
           borderBottom: '3px solid #616161',
         }}
       >
+        {/* Image de la Pokéball (si capturé) */}
+        {isCaptured && (
+          <Box
+            sx={{
+              width: 32,
+              height: 32,
+              position: 'relative',
+              flexShrink: 0,
+            }}
+          >
+            <Box
+              sx={{
+                width: '100%',
+                height: '100%',
+                borderRadius: '50%',
+                backgroundColor: '#4caf50',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+              }}
+            />
+            <img
+              src={pokeball}
+              alt="Capturé"
+              style={{
+                width: '100%',
+                height: '100%',
+                position: 'relative',
+                zIndex: 2,
+              }}
+            />
+          </Box>
+        )}
+
         <Typography
           variant="h5"
           sx={{
@@ -159,24 +196,51 @@ export default function PokedexDetailsOverlay({ pokemon }: Props) {
               minWidth: 0,
             }}
           >
-            {/* Empreintes - 35% */}
+            {/* Empreintes - 25% */}
             <Box
               sx={{
-                flex: '0 0 35%',
+                flex: '0 0 25%',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
+                position: 'relative',
               }}
             >
-              <Typography variant="body2" color="text.secondary">
-                🐾
-              </Typography>
+              {/* Petite box centrée en haut */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: 50,
+                  height: 50,
+                  bgcolor: '#fff',
+                  borderRadius: '50%',
+                  boxShadow: `
+                    0 0 0 1px rgb(154 186 251),
+                    0 0 0 5px rgb(195 235 243),
+                    0 0 0 8px rgb(154 186 251)
+                  `,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  zIndex: 2,
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ fontSize: 18, lineHeight: 1 }}
+                >
+                  🐾
+                </Typography>
+              </Box>
             </Box>
 
-            {/* Types, tailles, poids - 65% */}
+            {/* Types, tailles, poids - 75% */}
             <Box
               sx={{
-                flex: '0 0 65%',
+                flex: '0 0 75%',
                 display: 'flex',
                 flexDirection: 'column',
               }}
@@ -210,14 +274,21 @@ export default function PokedexDetailsOverlay({ pokemon }: Props) {
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',
+                  textAlign: 'left',
                   px: 1,
                 }}
               >
-                <Typography variant="body2" sx={{ color: '#616161' }}>
-                  Taille : {pokemon.height} m
+                <Typography
+                  variant="body2"
+                  sx={{ color: '#616161', paddingLeft: '20px' }}
+                >
+                  HAUT. : {pokemon.height}
                 </Typography>
-                <Typography variant="body2" sx={{ color: '#616161' }}>
-                  Poids : {pokemon.weight} kg
+                <Typography
+                  variant="body2"
+                  sx={{ color: '#616161', paddingLeft: '20px' }}
+                >
+                  POIDS : {pokemon.weight}
                 </Typography>
               </Box>
             </Box>
