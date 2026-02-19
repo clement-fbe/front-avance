@@ -1,5 +1,5 @@
 import { Box, Typography, List } from '@mui/material';
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import type { Pokemon } from '../types/pokemon.type';
 import { getGen4Pokemon } from '../src/services/tyradex';
 import pokeball from '../src/assets/pokeball.png';
@@ -9,35 +9,28 @@ import { useCaptureStatus } from '../src/hook/useCaptureStatus'; // ← Import d
 interface Props {
   pokemonList: Pokemon[];
   selectedIndex: number | null;
-  initialIndex: number;
+  cursorIndex: number;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
   onSelect: (pokemon: Pokemon) => void;
   onListLoaded: (list: Pokemon[]) => void;
+  variant?: 'default' | 'searched';
+  resultCount?: number;
 }
 
 export default function PokedexTop({
   pokemonList,
   selectedIndex,
-  initialIndex,
+  cursorIndex,
+  onMoveUp,
+  onMoveDown,
   onSelect,
   onListLoaded,
+  variant = 'default',
+  resultCount,
 }: Props) {
+  const isSearched = variant === 'searched';
   const { isCaptured } = useCaptureStatus(); // ← Utiliser le hook
-
-  // Index contrôlé par les flèches
-  const [cursorIndex, setCursorIndex] = useState(initialIndex);
-
-  // Synchroniser le curseur avec l'index sélectionné (URL)
-  useEffect(() => {
-    if (selectedIndex !== null && selectedIndex >= 0) {
-      setCursorIndex(selectedIndex);
-      return;
-    }
-    if (pokemonList.length > 0) {
-      setCursorIndex((prev) =>
-        Math.min(Math.max(prev, 0), pokemonList.length - 1),
-      );
-    }
-  }, [selectedIndex]);
 
   // Références des items
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -61,9 +54,9 @@ export default function PokedexTop({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowDown') {
-        setCursorIndex((prev) => Math.min(prev + 1, pokemonList.length - 1));
+        onMoveDown();
       } else if (e.key === 'ArrowUp') {
-        setCursorIndex((prev) => Math.max(prev - 1, 0));
+        onMoveUp();
       } else if (e.key === 'Enter' && pokemonList[cursorIndex]) {
         onSelect(pokemonList[cursorIndex]);
       }
@@ -71,7 +64,7 @@ export default function PokedexTop({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [pokemonList, cursorIndex, onSelect]);
+  }, [pokemonList, cursorIndex, onSelect, onMoveUp, onMoveDown]);
 
   // Pokémon affiché = sélection clavier uniquement
   const selectedPokemon = pokemonList[cursorIndex] ?? null;
@@ -83,16 +76,23 @@ export default function PokedexTop({
         display: 'flex',
         flexDirection: 'column',
         mx: '-30px',
-        background: `
-          linear-gradient(
-            to bottom,
-            rgb(146 146 113) 0%,
-            rgb(146 146 113) 10%,
-            rgb(113 113 81) 50%,
-            rgb(146 146 113) 90%,
-            rgb(146 146 113) 100%
-          )
-        `,
+        background: isSearched
+          ? `linear-gradient(
+              to bottom,
+              rgb(130 146 100) 0%,
+              rgb(130 146 100) 10%,
+              rgb(100 113 70) 50%,
+              rgb(130 146 100) 90%,
+              rgb(130 146 100) 100%
+            )`
+          : `linear-gradient(
+              to bottom,
+              rgb(146 146 113) 0%,
+              rgb(146 146 113) 10%,
+              rgb(113 113 81) 50%,
+              rgb(146 146 113) 90%,
+              rgb(146 146 113) 100%
+            )`,
       }}
     >
       {/* Section header en deux parties */}
@@ -107,7 +107,7 @@ export default function PokedexTop({
         <Box
           sx={{
             flex: '0 0 80%',
-            bgcolor: '#d3ba61',
+            bgcolor: isSearched ? 'rgb(170, 186, 120)' : '#d3ba61',
             display: 'flex',
             alignItems: 'center',
             pl: 3,
@@ -152,7 +152,7 @@ export default function PokedexTop({
         <Box
           sx={{
             flex: '0 0 20%',
-            bgcolor: '#b5b576',
+            bgcolor: isSearched ? '#8aaa66' : '#b5b576',
           }}
         />
       </Box>
@@ -162,8 +162,8 @@ export default function PokedexTop({
           flex: 1,
           minHeight: 0,
           gap: 1,
-          borderTop: '5px solid rgb(113 113 81)',
-          borderBottom: '5px solid rgb(113 113 81)',
+          borderTop: `5px solid ${isSearched ? 'rgb(100 113 70)' : 'rgb(113 113 81)'}`,
+          borderBottom: `5px solid ${isSearched ? 'rgb(100 113 70)' : 'rgb(113 113 81)'}`,
           overflow: 'hidden',
         }}
       >
@@ -390,7 +390,7 @@ export default function PokedexTop({
           </Box>
         </Box>
       </Box>
-      {/* Nouvelle barre en haut */}
+      {/* Bottom bar */}
       <Box
         sx={{
           height: '15%',
@@ -402,15 +402,44 @@ export default function PokedexTop({
         <Box
           sx={{
             flex: '0 0 80%',
-            bgcolor: 'rgb(211, 186, 97)',
+            bgcolor: isSearched ? 'rgb(170, 186, 120)' : 'rgb(211, 186, 97)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            pl: 4,
           }}
-        />
+        >
+          {isSearched && resultCount !== undefined && (
+            <>
+              <Typography
+                sx={{
+                  fontWeight: 'bold',
+                  color: '#3a4a2a',
+                  fontSize: 14,
+                  lineHeight: 1.2,
+                }}
+              >
+                RESULTATS
+              </Typography>
+              <Typography
+                sx={{
+                  fontWeight: 'bold',
+                  color: '#3a4a2a',
+                  fontSize: 18,
+                  lineHeight: 1.2,
+                }}
+              >
+                {String(resultCount).padStart(3, '0')}
+              </Typography>
+            </>
+          )}
+        </Box>
 
         {/* Partie droite */}
         <Box
           sx={{
             flex: '0 0 20%',
-            bgcolor: '#b5b576',
+            bgcolor: isSearched ? '#8aaa66' : '#b5b576',
           }}
         />
       </Box>

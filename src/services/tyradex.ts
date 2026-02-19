@@ -25,8 +25,14 @@ export const getGen4Pokemon = async (): Promise<Pokemon[]> => {
       sinnohId: index + 1,
       name: p.name.fr,
       types: p.types.map((t) => t.name),
-      height: p.height,
-      weight: p.weight,
+      height:
+        typeof p.height === 'string'
+          ? parseFloat(String(p.height).replace(',', '.')) || 0
+          : (p.height ?? 0),
+      weight:
+        typeof p.weight === 'string'
+          ? parseFloat(String(p.weight).replace(',', '.')) || 0
+          : (p.weight ?? 0),
       caught: false,
     }));
 

@@ -18,8 +18,8 @@ export interface TyradexPokemon {
   pokedex_id: number;
   name: { fr: string };
   types: { name: string }[];
-  height: number;
-  weight: number;
+  height: string | number;
+  weight: string | number;
 }
 
 // Structure propre utilisée dans ton application

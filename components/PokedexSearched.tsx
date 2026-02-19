@@ -1,9 +1,8 @@
 import { Box, Typography } from '@mui/material';
-import { useOutletContext, useNavigate } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 import type { Pokemon } from '../types/pokemon.type';
 
-export default function PokedexBottom() {
-  const navigate = useNavigate();
+export default function PokedexSearched() {
   const { cursorIndex, onMoveUp, onMoveDown, onConfirm } = useOutletContext<{
     pokemonList: Pokemon[];
     selectedIndex: number | null;
@@ -20,7 +19,7 @@ export default function PokedexBottom() {
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
-        bgcolor: '#c7b27a',
+        bgcolor: '#8a9a6a',
         borderRadius: '6px',
         overflow: 'hidden',
       }}
@@ -32,15 +31,15 @@ export default function PokedexBottom() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          bgcolor: '#d7c37f',
-          borderBottom: '2px solid #9b8a55',
+          bgcolor: '#9aaa7a',
+          borderBottom: '2px solid #6a7a4a',
           fontWeight: 'bold',
           position: 'relative',
           zIndex: 2,
         }}
       >
-        <Typography sx={{ fontWeight: 'bold', color: '#6b5b2f' }}>
-          B QUITTER
+        <Typography sx={{ fontWeight: 'bold', color: '#3a4a2a' }}>
+          'ESC' RETOUR
         </Typography>
       </Box>
 
@@ -49,72 +48,10 @@ export default function PokedexBottom() {
         sx={{
           flex: 1,
           position: 'relative',
-          bgcolor: '#c7b27a',
+          bgcolor: '#8a9a6a',
           overflow: 'hidden',
         }}
       >
-        {/* Button CHERCHER POKEMON */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 16,
-            left: 16,
-            width: 150,
-            height: 64,
-            bgcolor: '#7ed36a',
-            borderRadius: '8px',
-            border: '3px solid #3d8f3a',
-            boxShadow: 'inset 0 0 0 2px #b5f2a6',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            px: 2,
-            cursor: 'pointer',
-            '&:hover': { filter: 'brightness(1.1)' },
-          }}
-          onClick={() => navigate('/search')}
-        >
-          <Typography
-            sx={{ color: '#1d5c1d', fontWeight: 'bold', fontSize: 12 }}
-          >
-            CHERCHER
-            <br />
-            POKEMON
-          </Typography>
-          <Box
-            sx={{
-              width: 26,
-              height: 26,
-              borderRadius: '50%',
-              border: '3px solid #3d8f3a',
-              position: 'relative',
-            }}
-          >
-            <Box
-              sx={{
-                position: 'absolute',
-                width: 12,
-                height: 12,
-                borderRadius: '50%',
-                border: '3px solid #3d8f3a',
-                top: 4,
-                left: 4,
-              }}
-            />
-            <Box
-              sx={{
-                position: 'absolute',
-                width: 10,
-                height: 3,
-                bgcolor: '#3d8f3a',
-                transform: 'rotate(45deg)',
-                right: -2,
-                bottom: -2,
-              }}
-            />
-          </Box>
-        </Box>
-
         {/* Button CONSULTER POKEDEX */}
         <Box
           onClick={onConfirm}
@@ -141,7 +78,7 @@ export default function PokedexBottom() {
           >
             CONSULTER
             <br />
-            POKEDEX
+            POKéDEX
           </Typography>
           <Box
             sx={{
@@ -175,8 +112,8 @@ export default function PokedexBottom() {
             width: 40,
             height: 120,
             borderRadius: '20px',
-            bgcolor: '#c6b07a',
-            border: '2px solid #9b8a55',
+            bgcolor: '#7a8a5a',
+            border: '2px solid #6a7a4a',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -236,7 +173,7 @@ export default function PokedexBottom() {
             height: 360,
             borderRadius: '50%',
             bgcolor: '#ffffff',
-            border: '6px solid #b98f8f',
+            border: '6px solid #8a7a6a',
             overflow: 'hidden',
             boxShadow: '0 2px 0 rgba(0,0,0,0.2)',
           }}
@@ -258,7 +195,7 @@ export default function PokedexBottom() {
               left: 0,
               right: 0,
               height: 6,
-              bgcolor: '#6b5b2f',
+              bgcolor: '#4a5a3a',
               transform: 'translateY(-50%)',
             }}
           />
@@ -271,7 +208,7 @@ export default function PokedexBottom() {
               height: 28,
               borderRadius: '50%',
               bgcolor: '#f5f5f5',
-              border: '4px solid #6b5b2f',
+              border: '4px solid #4a5a3a',
               transform: 'translate(-50%, -50%)',
             }}
           />
