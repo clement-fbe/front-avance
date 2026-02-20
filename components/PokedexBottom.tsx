@@ -1,9 +1,12 @@
 import { Box, Typography } from '@mui/material';
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import type { Pokemon } from '../types/pokemon.type';
+import { useAppDispatch } from '../src/store/hooks';
+import { logout } from '../src/store/authSlice';
 
 export default function PokedexBottom() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { cursorIndex, onMoveUp, onMoveDown, onConfirm } = useOutletContext<{
     pokemonList: Pokemon[];
     selectedIndex: number | null;
@@ -39,8 +42,19 @@ export default function PokedexBottom() {
           zIndex: 2,
         }}
       >
-        <Typography sx={{ fontWeight: 'bold', color: '#6b5b2f' }}>
-          B QUITTER
+        <Typography
+          onClick={() => {
+            dispatch(logout());
+            navigate('/login');
+          }}
+          sx={{
+            fontWeight: 'bold',
+            color: '#6b5b2f',
+            cursor: 'pointer',
+            '&:hover': { color: '#e05656' },
+          }}
+        >
+          DÉCONNEXION
         </Typography>
       </Box>
 
@@ -230,7 +244,7 @@ export default function PokedexBottom() {
             position: 'absolute',
             top: '50%',
             right: -110,
-            transform: `translateY(-50%) rotate(${cursorIndex * -2}deg)`,
+            transform: `translateY(-50%) rotate(${cursorIndex * -20}deg)`,
             transition: 'transform 0.3s ease-out',
             width: 360,
             height: 360,
